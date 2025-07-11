@@ -2,6 +2,7 @@
 {{ system_message }}
 {% endif %}
 
+📌 **Instructions**
 You are a senior engineer assigned to review this pull request.
 
 ---
@@ -22,7 +23,7 @@ You are a senior engineer assigned to review this pull request.
 {% endfor %}
 
 {% if api_doc_context %}
-📚 **Referenced API Documentation**:
+📚 **Referenced API Documentation (FAISS)**:
 {% for symbol in api_doc_context %}
 - `{{ symbol.name }}`:
   {{ symbol.doc[:400] }}{% if symbol.link %} ([docs]({{ symbol.link }})){% endif %}
@@ -37,7 +38,7 @@ You are a senior engineer assigned to review this pull request.
 {% endif %}
 
 {% if prior_reviews %}
-📝 **Previous Review Comments**:
+📝 **Previous Review Comments (Pullwise)**:
 {% for comment in prior_reviews %}
 - {{ comment.author }} ({{ comment.file }}@L{{ comment.line }}): {{ comment.text }}
 {% endfor %}
