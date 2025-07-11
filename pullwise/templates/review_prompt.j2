@@ -1,29 +1,59 @@
-# Code Review Request
+{% if system_message %}
+{{ system_message }}
+{% endif %}
 
-## PR Description
+You are a senior engineer assigned to review this pull request.
+
+---
+
+📘 **Pull Request Description**:
 {{ pr_description }}
 
-## Issue
+{% if issue_description %}
+🔗 **Linked Issue**:
 {{ issue_description }}
+{% endif %}
 
-## Code Context (Chroma)
-{% for file in code_context %}
-- {{ file.filename }}: {{ file.snippet }}
+---
+
+🧠 **Relevant Codebase Context (Chroma)**:
+{% for doc in chroma_context %}
+- {{ doc.filename }}: {{ doc.content[:300] }}{% if loop.index < chroma_context|length %}...{% endif %}
 {% endfor %}
 
-## Voyage RAG Memory
-{% for mem in voyage_memory %}
-- {{ mem }}
+{% if api_doc_context %}
+📚 **Referenced API Documentation**:
+{% for symbol in api_doc_context %}
+- `{{ symbol.name }}`:
+  {{ symbol.doc[:400] }}{% if symbol.link %} ([docs]({{ symbol.link }})){% endif %}
 {% endfor %}
+{% endif %}
 
-## Prior Comments
-{% for comment in prior_comments %}
-- {{ comment }}
+{% if voyage_context %}
+📦 **Supplemental Knowledge (Voyage RAG)**:
+{% for passage in voyage_context %}
+- {{ passage.source }}: {{ passage.content[:300] }}...
 {% endfor %}
+{% endif %}
+
+{% if prior_reviews %}
+📝 **Previous Review Comments**:
+{% for comment in prior_reviews %}
+- {{ comment.author }} ({{ comment.file }}@L{{ comment.line }}): {{ comment.text }}
+{% endfor %}
+{% endif %}
+
+---
+
+🧪 TASK:
+Analyze the code changes and provide:
+1. A summary of the changes
+2. Suggested improvements (design, bug, style, tests)
+3. Inline comments per file + line (if applicable)
 
 Return JSON with:
 {
   "summary": "...",
-  "suggestions": [...],
+  "suggestions": ["...", "..."],
   "comments": [{"file": "...", "line": ..., "comment": "..."}]
 }
