@@ -1,52 +1,56 @@
 import os
 import json
-from typing import Optional
+from pathlib import Path
+from typing import Any, Dict
+
+DEFAULT_CONFIG = {
+    "llm": "openai",
+    "llm_fallback": True,
+    "use_langchain": True,
+    "langchain_tracing": False,
+    "memory_recall_enabled": True,
+}
+
+CONFIG_PATH = Path.home() / ".pullwise" / "config"
 
 class Settings:
     def __init__(self):
-        self.config = self._load_config()
+        self.config = DEFAULT_CONFIG.copy()
 
-    def _load_config(self):
-        config = {}
+        # Load ~/.pullwise/config if exists
+        if CONFIG_PATH.exists():
+            with open(CONFIG_PATH, "r") as f:
+                file_config = json.load(f)
+                self.config.update(file_config)
 
-        # 1. Load from environment variables
-        config["llm"] = os.getenv("PULLWISE_LLM", "openai")
-        config["llm_fallback"] = os.getenv("PULLWISE_LLM_FALLBACK", "true").lower() == "true"
-        config["use_langchain"] = os.getenv("PULLWISE_USE_LANGCHAIN", "true").lower() == "true"
-        config["langchain_tracing"] = os.getenv("PULLWISE_LANGCHAIN_TRACING", "false").lower() == "true"
-        config["memory_recall_enabled"] = os.getenv("PULLWISE_MEMORY_RECALL_ENABLED", "true").lower() == "true"
+        # Override with environment variables
+        for key in self.config:
+            env_key = f"PULLWISE_{key.upper()}"
+            if env_key in os.environ:
+                val = os.environ[env_key]
+                if val.lower() in ("true", "false"):
+                    val = val.lower() == "true"
+                self.config[key] = val
 
-        # 2. Load from ~/.pullwise/config if it exists
-        config_path = os.path.expanduser("~/.pullwise/config")
-        if os.path.exists(config_path):
-            try:
-                with open(config_path, "r") as f:
-                    file_config = json.load(f)
-                    config.update(file_config)
-            except Exception as e:
-                print(f"Warning: Failed to load config file: {e}")
-
-        return config
-
-    def get(self, key: str, default: Optional[str] = None):
+    def get(self, key: str, default: Any = None) -> Any:
         return self.config.get(key, default)
 
     @property
-    def llm(self):
-        return self.config["llm"]
+    def llm(self) -> str:
+        return self.get("llm")
 
     @property
-    def llm_fallback(self):
-        return self.config["llm_fallback"]
+    def llm_fallback(self) -> bool:
+        return self.get("llm_fallback")
 
     @property
-    def use_langchain(self):
-        return self.config["use_langchain"]
+    def use_langchain(self) -> bool:
+        return self.get("use_langchain")
 
     @property
-    def langchain_tracing(self):
-        return self.config["langchain_tracing"]
+    def langchain_tracing(self) -> bool:
+        return self.get("langchain_tracing")
 
     @property
-    def memory_recall_enabled(self):
-        return self.config["memory_recall_enabled"]
+    def memory_recall_enabled(self) -> bool:
+        return self.get("memory_recall_enabled")
