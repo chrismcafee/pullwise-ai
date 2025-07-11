@@ -9,6 +9,7 @@ class LLMFallbackWrapper(LLMPort):
         self.adapters = adapters
 
     def generate(self, prompt: str) -> str:
+        '''Generate a response using the first available LLM adapter'''
         for adapter in self.adapters:
             try:
                 return adapter.generate(prompt)
@@ -18,6 +19,7 @@ class LLMFallbackWrapper(LLMPort):
         raise RuntimeError("All LLMs failed to generate a response")
 
     def get_token_count(self, text: str) -> int:
+        '''Get the token count for the given text using the first available LLM adapter'''
         for adapter in self.adapters:
             try:
                 return adapter.get_token_count(text)

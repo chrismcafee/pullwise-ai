@@ -13,7 +13,6 @@ class ChromaIndexer(VectorIndexPort):
         self.collection = self.client.get_or_create_collection("codebase")
 
     def index_repo(self, repo_path: str, language_filter: str = None):
-        """Index all source files in the given repo directory"""
         for root, _, files in os.walk(repo_path):
             for file in files:
                 if not file.endswith(".py") and language_filter == "python":
@@ -31,7 +30,6 @@ class ChromaIndexer(VectorIndexPort):
                     print(f"Failed to index {path}: {e}")
 
     def query(self, query: str, top_k: int = 5) -> List[dict]:
-        """Query Chroma index with a semantic query"""
         results = self.collection.query(query_texts=[query], n_results=top_k)
         return [
             {"path": doc["path"], "content": doc["document"]}

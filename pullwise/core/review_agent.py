@@ -12,14 +12,13 @@ class ReviewAgent:
     def __init__(self, llm: LLMPort = None):
         self.context_builder = ContextBuilder()
         self.prompt_renderer = PromptRenderer()
-        self.llm = llm or LLMPort()  # Placeholder for actual adapter
+        self.llm = llm or LLMPort()
 
     def review(self, pr_number: int):
         context = self.context_builder.build(pr_number)
         prompt = self.prompt_renderer.render(context)
         output = self.llm.generate(prompt)
 
-        # Simulated ReviewResult parsing
         result = json.loads(output)
 
         timestamp = datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H-%M-%S")

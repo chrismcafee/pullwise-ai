@@ -21,7 +21,6 @@ class VoyageMemoryStore(MemoryStorePort):
             json.dump({"context": context.to_dict(), "output": ai_output}, f)
 
     def recall(self, prompt: str, tags: List[str]) -> List[str]:
-        # Simplified implementation for now: match files in the repo
         repo = tags[0] if tags else ""
         path = self._get_repo_path(repo)
         results = []
