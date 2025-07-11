@@ -1,20 +1,40 @@
 import os
-from typing import List, Dict
-import chromadb
-from chromadb.utils.embedding_functions import OpenAIEmbeddingFunction
+from typing import List
+from chromadb import Client
+from chromadb.config import Settings
+from pullwise.ports.vector_index_port import VectorIndexPort
+from pullwise.config.paths import get_cache_dir
 
-class ChromaIndexer:
+class ChromaIndexer(VectorIndexPort):
     def __init__(self):
-        self.client = chromadb.PersistentClient(path=os.path.expanduser("~/.pullwise/.cache/chroma"))
-        self.embedding_fn = OpenAIEmbeddingFunction()
+        self.cache_path = get_cache_dir("chroma")
+        os.makedirs(self.cache_path, exist_ok=True)
+        self.client = Client(Settings(persist_directory=self.cache_path))
+        self.collection = self.client.get_or_create_collection("codebase")
 
-    def index_files(self, files: List[str]) -> Dict:
-        collection = self.client.get_or_create_collection(name="codebase", embedding_function=self.embedding_fn)
-        indexed_count = 0
-        for file_path in files:
-            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-                content = f.read()
-            doc_id = os.path.relpath(file_path)
-            collection.add(documents=[content], ids=[doc_id])
-            indexed_count += 1
-        return {"files_indexed": indexed_count, "collection_name": collection.name}
+    def index_repo(self, repo_path: str, language_filter: str = None):
+        """Index all source files in the given repo directory"""
+        for root, _, files in os.walk(repo_path):
+            for file in files:
+                if not file.endswith(".py") and language_filter == "python":
+                    continue
+                path = os.path.join(root, file)
+                try:
+                    with open(path, "r", encoding="utf-8") as f:
+                        content = f.read()
+                    self.collection.add(
+                        documents=[content],
+                        metadatas=[{"path": path}],
+                        ids=[path]
+                    )
+                except Exception as e:
+                    print(f"Failed to index {path}: {e}")
+
+    def query(self, query: str, top_k: int = 5) -> List[dict]:
+        """Query Chroma index with a semantic query"""
+        results = self.collection.query(query_texts=[query], n_results=top_k)
+        return [
+            {"path": doc["path"], "content": doc["document"]}
+            for doc in zip(results["metadatas"][0], results["documents"][0])
+        ]
+
