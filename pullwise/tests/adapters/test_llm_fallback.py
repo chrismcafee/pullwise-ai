@@ -1,25 +1,30 @@
 import pytest
 from pullwise.adapters.llm.llm_fallback import LLMFallbackWrapper
-from pullwise.ports.llm_port import LLMPort
 
+class MockLLM:
+    def __init__(self, should_fail=False):
+        self.should_fail = should_fail
 
-class FailingLLM(LLMPort):
     def generate(self, prompt: str) -> str:
-        raise RuntimeError("Simulated failure")
+        if self.should_fail:
+            raise Exception("Simulated failure")
+        return "fallback result"
 
     def get_token_count(self, text: str) -> int:
-        return 1
+        if self.should_fail:
+            raise Exception("Simulated failure")
+        return len(text.split())
 
+def test_fallback_success_after_failure():
+    llm1 = MockLLM(should_fail=True)
+    llm2 = MockLLM()
+    wrapper = LLMFallbackWrapper([llm1, llm2])
+    result = wrapper.generate("hello")
+    assert result == "fallback result"
 
-class DummyLLM(LLMPort):
-    def generate(self, prompt: str) -> str:
-        return "Success!"
-
-    def get_token_count(self, text: str) -> int:
-        return 42
-
-
-def test_llm_fallback_success():
-    fallback = LLMFallbackWrapper([FailingLLM(), DummyLLM()])
-    result = fallback.generate("Hello")
-    assert result == "Success!"
+def test_all_failures_raise():
+    llm1 = MockLLM(should_fail=True)
+    llm2 = MockLLM(should_fail=True)
+    wrapper = LLMFallbackWrapper([llm1, llm2])
+    with pytest.raises(RuntimeError):
+        wrapper.generate("will fail")
