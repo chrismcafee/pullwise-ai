@@ -1,18 +1,17 @@
-import os
 import typer
-from rich import print
-from rich.console import Console
+from pullwise.vector_store.chroma_indexer import ChromaIndexer
+from pullwise.utils.file_scanner import scan_codebase
+from pullwise.display.index_summary import print_index_summary
 
 app = typer.Typer()
 
 @app.command()
-def index(repo_path: str = ".", language: str = "python"):
-    console = Console()
-    console.print(f"[bold green]Indexing repo:[/] {repo_path} for language: {language}")
-    # Simulate Chroma + FAISS indexing
-    chroma_path = os.path.expanduser("~/.pullwise/.cache/chroma")
-    faiss_path = os.path.expanduser("~/.pullwise/.cache/faiss")
-    os.makedirs(chroma_path, exist_ok=True)
-    os.makedirs(faiss_path, exist_ok=True)
-    console.print(f"[blue]Indexed code to:[/] {chroma_path}")
-    console.print(f"[blue]Indexed docs to:[/] {faiss_path}")
+def index(
+    path: str = typer.Argument(".", help="Path to the Git repo"),
+    language: str = typer.Option(None, help="Optional language filter, e.g., python")
+):
+    """Indexes the repo source files using Chroma."""
+    files = scan_codebase(path, language=language)
+    indexer = ChromaIndexer()
+    index_result = indexer.index_files(files)
+    print_index_summary(index_result)
