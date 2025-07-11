@@ -1,0 +1,29 @@
+# Code Review Request
+
+## PR Description
+{{ pr_description }}
+
+## Issue
+{{ issue_description }}
+
+## Code Context (Chroma)
+{% for file in code_context %}
+- {{ file.filename }}: {{ file.snippet }}
+{% endfor %}
+
+## Voyage RAG Memory
+{% for mem in voyage_memory %}
+- {{ mem }}
+{% endfor %}
+
+## Prior Comments
+{% for comment in prior_comments %}
+- {{ comment }}
+{% endfor %}
+
+Return JSON with:
+{
+  "summary": "...",
+  "suggestions": [...],
+  "comments": [{"file": "...", "line": ..., "comment": "..."}]
+}

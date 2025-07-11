@@ -1,2 +1,3 @@
-# pullwise
-AI-powered pull request reviewer that understands diffs, Jira tickets, and code context — with human-in-the-loop editing, semantic search, and rich CLI previews.
+# 🦉 pullwise-ai
+
+Terminal AI agent for better, faster PR reviews — learns from past feedback and understands your codebase, ticket context, and internal/external documentation. Human-in-the-loop edits.
