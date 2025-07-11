@@ -1,18 +1,32 @@
-import os
 import logging
+import os
 from datetime import datetime
+from pathlib import Path
 
-def get_logger(command: str):
-    timestamp = datetime.now(datetime.timezone.utc).strftime("%Y_%m_%d")
-    log_dir = os.path.expanduser("~/.pullwise/logs/")
-    os.makedirs(log_dir, exist_ok=True)
-    log_path = os.path.join(log_dir, f"{timestamp}_org_repo_pr1_{command}.log")
+from pullwise.config.paths import get_log_path
 
-    logger = logging.getLogger(command)
-    logger.setLevel(logging.INFO)
-    handler = logging.FileHandler(log_path)
-    formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
+class LoggerFactory:
+    @staticmethod
+    def create_logger(org: str, repo: str, pr_number: int, command: str, verbose: bool = False) -> logging.Logger:
+        log_path = get_log_path(org, repo, pr_number, command)
+        Path(log_path).parent.mkdir(parents=True, exist_ok=True)
 
-    return logger
+        logger = logging.getLogger(f"{org}_{repo}_{pr_number}_{command}")
+        logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
+
+        # File handler
+        file_handler = logging.FileHandler(log_path)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
+        # Optional stdout handler
+        if verbose:
+            stream_handler = logging.StreamHandler()
+            stream_handler.setFormatter(formatter)
+            logger.addHandler(stream_handler)
+
+        return logger
