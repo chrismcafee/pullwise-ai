@@ -1,6 +1,6 @@
 from pullwise.factory.base import BaseAdapterFactory
 from pullwise.adapters.issue_tracker.asana import AsanaAdapter
-from pullwise.adapters.issue_tracker.azure_devops import AzureDevopsAdapter
+from pullwise.adapters.issue_tracker.azure_devops import AzureDevOpsAdapter
 from pullwise.adapters.issue_tracker.bugzilla import BugzillaAdapter
 from pullwise.adapters.issue_tracker.clickup import ClickupAdapter
 from pullwise.adapters.issue_tracker.clubhouse import ClubhouseAdapter
@@ -24,7 +24,7 @@ class IssueTrackerFactory(BaseAdapterFactory):
         if provider == "asana":
             return AsanaAdapter(settings)
         elif provider == "azure_devops":
-            return AzureDevopsAdapter(settings)
+            return AzureDevOpsAdapter(settings)
         elif provider == "bugzilla":
             return BugzillaAdapter(settings)
         elif provider == "clickup":
