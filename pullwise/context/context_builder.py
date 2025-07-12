@@ -20,11 +20,11 @@ class ContextBuilder:
             head_branch=pr_meta["head"],
         )
 
-        # 2. Fetch diff files
+        # 2. Fetch diff files from remote
         diff_files_raw = self.vcs.get_pr_diff(pr_number)
         diff_files = [DiffFile(filename=f["file"], diff=f["diff"]) for f in diff_files_raw]
 
-        # 3. Fetch linked issue (if any)
+        # 3. Fetch linked issue (if any) from issue tracker
         issue = None
         if "issue_key" in pr_meta:
             issue_data = self.issues.get_issue(pr_meta["issue_key"])
@@ -34,7 +34,7 @@ class ContextBuilder:
                 description=issue_data.get("description"),
             )
 
-        # 4. Fetch vector context from Chroma
+        # 4. Fetch vector (indexed repo) context from Chroma
         vector_context = []
         for f in diff_files:
             chunks = self.vector.query(filename=f.filename, top_k=3)
@@ -44,7 +44,7 @@ class ContextBuilder:
         # 5. Fetch voyage memory (prior PR reviews)
         voyage_context = self.memory.recall(prompt=pr.title + " " + pr.description, tags=[pr_meta["repo"]])
 
-        # 6. Fetch prior comments (if available)
+        # 6. Fetch prior comments (if available) from open pr
         prior_comments = self.vcs.get_review_comments(pr_number)
 
         return ReviewContext(
