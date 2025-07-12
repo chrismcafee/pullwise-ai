@@ -5,7 +5,7 @@ from chromadb.config import Settings
 from pullwise.ports.vector_index_port import VectorIndexPort
 from pullwise.config.paths import get_cache_dir
 
-class ChromaIndexer(VectorIndexPort):
+class ChromaAdapter(VectorIndexPort):
     def __init__(self):
         self.cache_path = get_cache_dir("chroma")
         os.makedirs(self.cache_path, exist_ok=True)

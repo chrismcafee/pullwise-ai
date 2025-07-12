@@ -5,14 +5,17 @@ from pullwise.context.context_builder import ContextBuilder
 from pullwise.context.prompt_renderer import PromptRenderer
 from pullwise.ports.llm_port import LLMPort
 from pullwise.utils.logger import get_logger
+from pullwise.settings import Settings
+from pullwise.factory.llm_factory import LLMFactory
 
 logger = get_logger("review")
 
 class ReviewAgent:
-    def __init__(self, llm: LLMPort = None):
+    def __init__(self, settings: Settings = None, llm: LLMPort = None):
+        self.settings = settings or Settings.load()
+        self.llm = llm or LLMFactory.from_settings(self.settings)
         self.context_builder = ContextBuilder()
         self.prompt_renderer = PromptRenderer()
-        self.llm = llm or LLMPort()
 
     def review(self, pr_number: int):
         context = self.context_builder.build(pr_number)

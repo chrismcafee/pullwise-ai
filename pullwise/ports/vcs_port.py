@@ -1,6 +1,7 @@
+from abc import ABC, abstractmethod
 from typing import List, Dict
 
-class VCSPort:
+class VCSPort(ABC):
     @abstractmethod
     def get_pr_diff(self, pr_number: int) -> List[Dict]:
         '''Get the diff for the given PR number'''

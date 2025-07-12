@@ -1,6 +1,6 @@
 from pullwise.ports.vcs_port import VCSPort, DiffFile
 
-class GitLabVCSAdapter(VCSPort):
+class GitLabAdapter(VCSPort):
     def get_pr_diff(self, pr_number: int):
         raise NotImplementedError("GitLab PR diff fetch not implemented yet")
 

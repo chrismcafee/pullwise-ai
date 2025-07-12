@@ -1,7 +1,6 @@
 import os
 import json
 import typer
-from rich import print
 from rich.console import Console
 from rich.table import Table
 from pullwise.display.badge_renderer import add_footer

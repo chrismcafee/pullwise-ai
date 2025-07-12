@@ -1,6 +1,7 @@
 import os
 import json
 import typer
+from pullwise.adapters.vcs.factory import VCSAdapterFactory
 
 app = typer.Typer()
 
@@ -14,5 +15,7 @@ def post(pr_number: int, file: str = None):
     with open(path) as f:
         review = json.load(f)
 
+    vcs_adapter = VCSAdapterFactory.from_env()
     for comment in review.get("comments", []):
-        print(f"🦉 Posting comment to {comment['file']}:{comment['line']} - {comment['comment']}")
+        vcs_adapter.post_inline_comment(comment["file"], comment["line"], comment["comment"])
+        print(f"🦉 Posted comment to {comment['file']}:{comment['line']} - {comment['comment']}")

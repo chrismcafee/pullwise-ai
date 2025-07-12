@@ -5,7 +5,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-class OpenAILLM(LLMPort):
+class OpenAILLMAdapter(LLMPort):
     def __init__(self, settings):
         self.api_key = settings.openai_api_key
         self.model = settings.openai_model or "gpt-4"

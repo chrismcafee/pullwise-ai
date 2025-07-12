@@ -3,7 +3,7 @@ import json
 from typing import List, Dict
 from pullwise.ports.memory_store_port import MemoryStorePort
 
-class VoyageMemoryStore(MemoryStorePort):
+class VoyageAdapter(MemoryStorePort):
     def __init__(self, base_dir: str = "~/.pullwise/.cache/voyage/"):
         self.base_dir = os.path.expanduser(base_dir)
         os.makedirs(self.base_dir, exist_ok=True)

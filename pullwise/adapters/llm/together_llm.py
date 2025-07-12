@@ -1,10 +1,6 @@
-"""
-Stub implementation of the LLM adapter.
-"""
-
 from pullwise.ports.llm_port import LLMPort
 
-class StubLLM(LLMPort):
+class TogetherLLMAdapter(LLMPort):
     def generate(self, prompt: str) -> str:
         return "This is a stubbed response."
 

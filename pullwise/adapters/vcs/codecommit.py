@@ -1,6 +1,6 @@
 from pullwise.ports.vcs_port import VCSPort, DiffFile
 
-class CodeCommitVCSAdapter(VCSPort):
+class AWSCodeCommitAdapter(VCSPort):
     def get_pr_diff(self, pr_number: int):
         raise NotImplementedError("CodeCommit PR diff fetch not implemented yet")
 

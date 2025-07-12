@@ -1,6 +1,6 @@
 from pullwise.ports.vcs_port import VCSPort
 
-class LocalSVNVCSAdapter(VCSPort):
+class LocalSubversionAdapter(VCSPort):
     def get_pr_diff(self, pr_number: int):
         raise NotImplementedError("SVN diff fetch not implemented yet")
 

@@ -1,7 +1,7 @@
 from github import Github
 from pullwise.ports.vcs_port import VCSPort, DiffFile
 
-class GitHubVCSAdapter(VCSPort):
+class GitHubAdapter(VCSPort):
     def __init__(self, token: str, repo_name: str):
         self.client = Github(token)
         self.repo = self.client.get_repo(repo_name)
