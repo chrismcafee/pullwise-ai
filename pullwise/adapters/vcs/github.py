@@ -17,3 +17,12 @@ class GitHubVCSAdapter(VCSPort):
 
     def post_inline_comment(self, file: str, position: int, comment: str):
         raise NotImplementedError("This method should be implemented with full PR context")
+
+    def get_local_repo_metadata(self) -> dict:
+        return {
+            "repo_root": self.get_repo_root(),
+            "remote_url": self.get_remote_url(),
+            "branch": self.get_current_branch(),
+            "org_repo": self.get_org_repo(),  # tuple (org, repo)
+    }
+
