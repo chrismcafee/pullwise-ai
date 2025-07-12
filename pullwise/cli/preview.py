@@ -4,13 +4,14 @@ import typer
 from rich.console import Console
 from rich.table import Table
 from pullwise.display.badge_renderer import add_footer
+from pullwise.utils.git_decorators import inject_repo_info
 
 app = typer.Typer()
 
 @app.command()
-def preview(pr_number: int, with_code: bool = False, file: str = None):
-    # todo: move to path helper
-    base_path = os.path.expanduser(f"~/.pullwise/reviews/org/repo/{pr_number}/ai")
+@inject_repo_info
+def preview(pr_number: int, with_code: bool = False, file: str = None, org: str = None, repo: str = None):
+    base_path = os.path.expanduser(f"~/.pullwise/reviews/{org}/{repo}/{pr_number}/ai")
     latest_file = sorted(os.listdir(base_path))[-1]
     with open(os.path.join(base_path, latest_file)) as f:
         review = json.load(f)

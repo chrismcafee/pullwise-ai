@@ -2,13 +2,14 @@ import os
 import json
 import typer
 from pullwise.adapters.vcs.factory import VCSAdapterFactory
+from pullwise.utils.git_decorators import inject_repo_info
 
 app = typer.Typer()
 
 @app.command()
-def post(pr_number: int, file: str = None):
-    # todo: move base path to path helper
-    base_path = os.path.expanduser(f"~/.pullwise/reviews/org/repo/{pr_number}/edited")
+@inject_repo_info
+def post(pr_number: int, file: str = None, org: str = None, repo: str = None):
+    base_path = os.path.expanduser(f"~/.pullwise/reviews/{org}/{repo}/{pr_number}/edited")
     if not file:
         file = sorted(os.listdir(base_path))[-1]
     path = os.path.join(base_path, file)
