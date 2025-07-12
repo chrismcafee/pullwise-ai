@@ -2,12 +2,14 @@ import os
 import typer
 import subprocess
 import datetime
+from pullwise.utils.git_decorators import inject_repo_info
 
 app = typer.Typer()
 
 @app.command()
-def edit(pr_number: int, last_ai: bool = True, file: str = None):
-    base_path = os.path.expanduser(f"~/.pullwise/reviews/org/repo/{pr_number}")
+@inject_repo_info
+def edit(pr_number: int, last_ai: bool = True, file: str = None, org: str = None, repo: str = None):
+    base_path = os.path.expanduser(f"~/.pullwise/reviews/{org}/{repo}/{pr_number}")
     ai_dir = os.path.join(base_path, "ai")
     edited_dir = os.path.join(base_path, "edited")
     os.makedirs(edited_dir, exist_ok=True)
