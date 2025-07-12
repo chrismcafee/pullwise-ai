@@ -3,6 +3,7 @@ from git import Repo
 from urllib.parse import urlparse
 
 class LocalGitAdapter(LocalVCSPort):
+    # todo: implement single method to detect (remote) org and repo name from local Git config
     def detect_github_repo() -> tuple[str, str]:
         """
         Detects GitHub org and repo name from the local Git configuration.
