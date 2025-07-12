@@ -1,5 +1,5 @@
 import typer
-from pullwise.adapters.vector_store.chroma import ChromaIndexer
+from pullwise.adapters.vector_store.chroma import ChromaAdapter
 from pullwise.utils.file_scanner import scan_codebase
 from pullwise.display.index_summary import print_index_summary
 
@@ -12,6 +12,6 @@ def index(
 ):
     """Indexes the repo source files using Chroma."""
     files = scan_codebase(path, language=language)
-    indexer = ChromaIndexer()
+    indexer = ChromaAdapter()
     index_result = indexer.index_repo(files)
     print_index_summary(index_result)
