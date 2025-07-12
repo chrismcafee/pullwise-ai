@@ -9,6 +9,7 @@ app = typer.Typer()
 
 @app.command()
 def preview(pr_number: int, with_code: bool = False, file: str = None):
+    # todo: move to path helper
     base_path = os.path.expanduser(f"~/.pullwise/reviews/org/repo/{pr_number}/ai")
     latest_file = sorted(os.listdir(base_path))[-1]
     with open(os.path.join(base_path, latest_file)) as f:

@@ -25,6 +25,7 @@ class ReviewAgent:
         result = json.loads(output)
 
         timestamp = datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H-%M-%S")
+        # todo: move to path helper
         output_dir = os.path.expanduser(f"~/.pullwise/reviews/org/repo/{pr_number}/ai/")
         os.makedirs(output_dir, exist_ok=True)
         path = os.path.join(output_dir, f"review-{timestamp}.json")

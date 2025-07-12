@@ -4,6 +4,7 @@ from typing import List, Dict
 from pullwise.ports.memory_store_port import MemoryStorePort
 
 class VoyageAdapter(MemoryStorePort):
+    # todo: move base_dir to path helper
     def __init__(self, base_dir: str = "~/.pullwise/.cache/voyage/"):
         self.base_dir = os.path.expanduser(base_dir)
         os.makedirs(self.base_dir, exist_ok=True)

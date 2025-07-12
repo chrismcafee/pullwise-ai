@@ -7,6 +7,7 @@ app = typer.Typer()
 
 @app.command()
 def post(pr_number: int, file: str = None):
+    # todo: move base path to path helper
     base_path = os.path.expanduser(f"~/.pullwise/reviews/org/repo/{pr_number}/edited")
     if not file:
         file = sorted(os.listdir(base_path))[-1]

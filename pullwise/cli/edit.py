@@ -7,6 +7,7 @@ app = typer.Typer()
 
 @app.command()
 def edit(pr_number: int, last_ai: bool = True, file: str = None):
+    # todo: move base path to path helper
     base_path = os.path.expanduser(f"~/.pullwise/reviews/org/repo/{pr_number}")
     ai_dir = os.path.join(base_path, "ai")
     edited_dir = os.path.join(base_path, "edited")

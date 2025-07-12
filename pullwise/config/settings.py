@@ -54,3 +54,8 @@ class Settings:
     @property
     def memory_recall_enabled(self) -> bool:
         return self.get("memory_recall_enabled")
+
+    # todo: Load from ~/.pullwise/credentials if exists
+    @property
+    def vcs_token(self) -> str:
+        return self.get("vcs_token")
